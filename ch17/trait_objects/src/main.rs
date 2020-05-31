@@ -20,6 +20,8 @@ fn main() {
                 height: 10,
                 label: String::from("OK"),
             }),
+            // doesn't work because String doesn't impl Draw
+            // Box::new(String::from("Hi")),
         ],
     };
 
