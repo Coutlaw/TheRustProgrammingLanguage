@@ -3,6 +3,10 @@ pub trait Draw {
 	fn draw(&self);
 }
 
+// Note: some rules about trait objects. they have to be object safe, meaning
+// the return type cannot be Self, and generics cannot be type parameters.
+// this is because rust no longer knows the type that self is and wont compile
+
 pub struct Screen { 
 	pub components: Vec<Box<dyn Draw>> // a trait object is the trait wrapped in a dynamic smart pointer
 	// this allows for substitution more complex than generics
