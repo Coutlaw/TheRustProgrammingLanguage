@@ -4,6 +4,7 @@ use trait_objects::{Draw, Screen, Button};
 fn main() {
     // now a user can consume our screen and add their new type to be drawn on the screen without issue
     // thanks to trait objects, also known as "duck typing"
+    // Trait objects perform dynamic dispatch, as oppose to static dispatch with generics (monomorphization)
     let screen = Screen {
         components: vec![
             Box::new(SelectBox {
