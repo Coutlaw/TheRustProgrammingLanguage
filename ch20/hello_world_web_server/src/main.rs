@@ -15,6 +15,9 @@ fn main() {
     }
 }
 
+// filesystem module
+use std::fs;
+
 fn handle_connection(mut stream: TcpStream) {
     // stack buffer to pull data from the stream
     let mut buffer = [0; 512];
@@ -22,8 +25,11 @@ fn handle_connection(mut stream: TcpStream) {
     // read bytes from the string and put them in the buffer
     stream.read(&mut buffer).unwrap();
 
-    // the basic HTTP response for v1.1 with no headers and no body
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    // read file as string
+    let contents = fs::read_to_string("hello.html").unwrap();
+
+    // format the string onto the HTTP response
+    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
 
     // we can send bytes downstream on the connection with .write(&[u8])
     stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
