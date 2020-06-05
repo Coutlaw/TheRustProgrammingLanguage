@@ -28,25 +28,21 @@ fn handle_connection(mut stream: TcpStream) {
     // b" " is to turn string into byte code
     let get = b"GET / HTTP/1.1\r\n";
 
-    if buffer.starts_with(get) {
-        // read file as string
-        let contents = fs::read_to_string("hello.html").unwrap();
-
-        // format the string onto the HTTP response
-        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
-
-        // we can send bytes downstream on the connection with .write(&[u8])
-        stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
-        
-        // flush() will wait for all bytes to be written before continuing in the program
-        stream.flush().unwrap();
+    let (status_line, filename) = if buffer.starts_with(get) {
+        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
     } else {
-        let status_line = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
-        let contents = fs::read_to_string("404.html").unwrap();
+        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
+    };
+    // read file as string
+    let contents = fs::read_to_string(filename).unwrap();
 
-        let response = format!("{}{}", status_line, contents);
+    // format the string onto the HTTP response
+    let response = format!("{}{}", status_line, contents);
 
-        stream.write(response.as_bytes()).unwrap();
-        stream.flush().unwrap();
-    }
+    // we can send bytes downstream on the connection with .write(&[u8])
+    stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
+    
+    // flush() will wait for all bytes to be written before continuing in the program
+    stream.flush().unwrap();
+
 }
