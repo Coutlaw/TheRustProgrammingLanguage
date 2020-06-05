@@ -1,6 +1,6 @@
 use std::io::prelude::*;
-use std::net::TcpStream;
 use std::net::TcpListener;
+use std::net::TcpStream;
 
 fn main() {
     // 7878 is the default http port, also it is how you spell rust on a 10 digit keypad
@@ -25,14 +25,22 @@ fn handle_connection(mut stream: TcpStream) {
     // read bytes from the string and put them in the buffer
     stream.read(&mut buffer).unwrap();
 
-    // read file as string
-    let contents = fs::read_to_string("hello.html").unwrap();
+    // b" " is to turn string into byte code
+    let get = b"GET / HTTP/1.1\r\n";
 
-    // format the string onto the HTTP response
-    let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
+    if buffer.starts_with(get) {
+        // read file as string
+        let contents = fs::read_to_string("hello.html").unwrap();
 
-    // we can send bytes downstream on the connection with .write(&[u8])
-    stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
-    // flush() will wait for all bytes to be written before continuing in the program
-    stream.flush().unwrap();
+        // format the string onto the HTTP response
+        let response = format!("HTTP/1.1 200 OK\r\n\r\n{}", contents);
+
+        // we can send bytes downstream on the connection with .write(&[u8])
+        stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
+        
+        // flush() will wait for all bytes to be written before continuing in the program
+        stream.flush().unwrap();
+    } else {
+        // handle other types of requests
+    }
 }
