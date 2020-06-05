@@ -33,6 +33,7 @@ fn handle_connection(mut stream: TcpStream) {
     } else {
         ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
     };
+    
     // read file as string
     let contents = fs::read_to_string(filename).unwrap();
 
@@ -41,8 +42,6 @@ fn handle_connection(mut stream: TcpStream) {
 
     // we can send bytes downstream on the connection with .write(&[u8])
     stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
-    
     // flush() will wait for all bytes to be written before continuing in the program
     stream.flush().unwrap();
-
 }
