@@ -22,6 +22,11 @@ fn handle_connection(mut stream: TcpStream) {
     // read bytes from the string and put them in the buffer
     stream.read(&mut buffer).unwrap();
 
-    // convert the bytes into a string from the buffer
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+    // the basic HTTP response for v1.1 with no headers and no body
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
+
+    // we can send bytes downstream on the connection with .write(&[u8])
+    stream.write(response.as_bytes()).unwrap(); // unwrap because .write could return an error
+    // flush() will wait for all bytes to be written before continuing in the program
+    stream.flush().unwrap();
 }
