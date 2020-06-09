@@ -7,12 +7,14 @@ fn main() {
     // 7878 is the default http port, also it is how you spell rust on a 10 digit keypad
     // our TcpListner will establish the connection string and wait for incoming requests
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    // our custom thread pool impl
+    let pool = ThreadPool::new(4)
 
     // process the incoming requests here
     for stream in listener.incoming() {
         let stream = stream.unwrap();
         // bad implementation here, we are creating limitless threads for every request incoming
-        thread::spawn(|| handle_connection(stream));
+        pool.execute(|| { handle_connection(stream) });
     }
 }
 
