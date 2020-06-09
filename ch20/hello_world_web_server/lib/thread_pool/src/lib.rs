@@ -1,3 +1,5 @@
+pub struct ThreadPool;
+
 #[cfg(test)]
 mod tests {
     #[test]

@@ -1,14 +1,14 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 use std::net::TcpStream;
-use std::thread;
+use thread_pool::ThreadPool;
 
 fn main() {
     // 7878 is the default http port, also it is how you spell rust on a 10 digit keypad
     // our TcpListner will establish the connection string and wait for incoming requests
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     // our custom thread pool impl
-    let pool = ThreadPool::new(4)
+    let pool = ThreadPool::new(4);
 
     // process the incoming requests here
     for stream in listener.incoming() {
