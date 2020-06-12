@@ -4,6 +4,13 @@ impl ThreadPool {
     pub fn new(_size: usize) -> ThreadPool {
         ThreadPool
     }
+
+    pub fn execute<F>(&self, f: F)
+        where 
+            F: FnOnce() + Send + 'static
+        {
+            
+        }
 }
 
 #[cfg(test)]
