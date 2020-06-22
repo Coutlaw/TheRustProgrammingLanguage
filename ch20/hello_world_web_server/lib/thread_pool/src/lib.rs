@@ -19,6 +19,16 @@ impl<F: FnOnce()> FnBox for F {
     }
 }
 
+impl Drop for Threadpool {
+    fn drop(&mut self) {
+        for worker in &mut self.workers {
+            println!("Shutting down worker {}", worker.id);
+
+            worker.thread.join().unwrap();
+        }
+    }
+}
+
 type Job = Box<FnBox + Send + 'static>;
 
 impl ThreadPool {
