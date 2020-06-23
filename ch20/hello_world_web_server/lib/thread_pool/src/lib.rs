@@ -26,6 +26,14 @@ enum Message {
 
 impl Drop for Threadpool {
     fn drop(&mut self) {
+        println!("Sending terminate message to all workers.");
+
+        for _ in &mut self.workers {
+            self.sender.send(Message::Terminate).unwrap();
+        }
+
+        println!("Shutting down all workers");
+        
         for worker in &mut self.workers {
             println!("Shutting down worker {}", worker.id);
 
